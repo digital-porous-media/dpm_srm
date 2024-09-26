@@ -1,20 +1,21 @@
 #ifndef SRM3D_HPP
 #define SRM3D_HPP
 
-#include <windows.h>
+// #include <windows.h>
 #include <vector>
 #include <cmath>
 
-class SRM3D {
+class SRM3D
+{
 public:
     // Constructor
-    SRM3D(const std::vector<std::vector<std::vector<int>>>& img, double Q);
+    SRM3D(const std::vector<std::vector<std::vector<int>>> &img, double Q);
     // Perform the segmentation
     void segment();
 
     // Get the segmentation result as a 3D array of region labels
     std::vector<std::vector<std::vector<int>>> getSegmentation() const;
-
+    // std::vector<int> getSegmentation() const;
 
 private:
     // struct Region {
@@ -24,7 +25,7 @@ private:
 
     //     // Constructor
     //     Region(int l, double intensity, int count);
-        
+
     //     // Compute the average intensity of the region
     //     double average_intensity() const;
 
@@ -43,18 +44,17 @@ private:
 
     const int width, height, depth;
 
-    const double g = 256;  // Some constant
-    float logDelta;   // Log delta for merging criterion
-    float Q;          // Parameter Q
-    float delta;      // Parameter delta
-    float factor;      // Merging factor
-
+    const double g = 256; // Some constant
+    float logDelta;       // Log delta for merging criterion
+    float Q;              // Parameter Q
+    float delta;          // Parameter delta
+    float factor;         // Merging factor
 
     // Initialize each voxel as its own region
     void initializeRegions();
 
-    void addNeighborPair(int neighborID, const std::vector<std::vector<int>>& pixel, const std::vector<std::vector<int>>& nextPixel, int i);
-    void addNeighborPair(int neighborID, const std::vector<std::vector<int>>& pixel, int i, int j);
+    void addNeighborPair(int neighborID, const std::vector<std::vector<int>> &pixel, const std::vector<std::vector<int>> &nextPixel, int i);
+    void addNeighborPair(int neighborID, const std::vector<std::vector<int>> &pixel, int i, int j);
 
     void initializeNeighbors();
 

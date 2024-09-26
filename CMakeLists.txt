@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.12)  # Adjust as needed
+cmake_minimum_required(VERSION 3.18)  # Adjust as needed
 project(SRM3DModule)
 
 # Set the policy to avoid the warning
-cmake_policy(SET CMP0148 NEW)
+# cmake_policy(SET CMP0148 NEW)
 
 # Find Python (adjust the version as needed)
 find_package(Python REQUIRED COMPONENTS Interpreter Development)
