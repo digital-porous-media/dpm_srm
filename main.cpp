@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "SRM3D.hpp" // Make sure to include the SRM3D header
+#include "SRM.hpp" // Make sure to include the SRM3D header
 
 void displaySegmentation(const std::vector<std::vector<std::vector<int>>>& segmentation) {
     for (size_t i = 0; i < segmentation.size(); ++i) {
@@ -34,13 +34,13 @@ int main() {
             {1, 2, 1}
         }
     };
-    std::vector<std::vector<std::vector<int> > > segmentation;
+    std::vector<std::vector<std::vector<int>>> segmentation;
 
     // Parameters for the SRM algorithm
     double g = 3.0; // Example value for g
     double Q = 3.0; // Example value for Q
 
-    SRM3D srm(image, g, Q);
+    SRM3D srm(image, Q);
     srm.segment();
     segmentation = srm.getSegmentation();
 

@@ -17,4 +17,4 @@ target_link_libraries(MyLibrary PRIVATE pybind11::module)
 set(CMAKE_CXX_STANDARD 14)
 
 # Create the Python module
-pybind11_add_module(srm3d wrapper.cpp SRM3D.cpp)
+pybind11_add_module(srm3d wrapper.cpp SRM.cpp)

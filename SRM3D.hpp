@@ -37,10 +37,11 @@ private:
     int width, height, depth;
 
     double factor;      // Merging factor
-    const double g = 256.0;  // Some constant
+    const double g = 256;  // Some constant
     double logDelta;   // Log delta for merging criterion
     double Q;          // Parameter Q
     double delta;      // Parameter delta
+
 
     // Initialize each voxel as its own region
     void initializeRegions();
