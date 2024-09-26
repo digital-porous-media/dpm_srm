@@ -1,60 +1,49 @@
 #ifndef SRM3D_HPP
 #define SRM3D_HPP
 
-// #include <windows.h>
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 #include <vector>
 #include <cmath>
+
+namespace py = pybind11;
 
 class SRM3D
 {
 public:
     // Constructor
-    SRM3D(const std::vector<std::vector<std::vector<int>>> &img, double Q);
+    SRM3D(const py::array_t<uint16_t> &img, float Q);
     // Perform the segmentation
     void segment();
 
     // Get the segmentation result as a 3D array of region labels
-    std::vector<std::vector<std::vector<int>>> getSegmentation() const;
-    // std::vector<int> getSegmentation() const;
+    py::array_t<uint16_t> getSegmentation() const;
 
 private:
-    // struct Region {
-    //     int label;
-    //     double intensity_sum;
-    //     int voxel_count;
+    const uint16_t *img_ptr;
 
-    //     // Constructor
-    //     Region(int l, double intensity, int count);
-
-    //     // Compute the average intensity of the region
-    //     double average_intensity() const;
-
-    //     // Merge another region into this region
-    //     void merge(const Region& other);
-    // };
-
-    std::vector<std::vector<std::vector<int>>> image;
-    std::vector<std::vector<std::vector<int>>> region_labels;
+    // py::array_t<int> image;
+    // std::vector<std::vector<std::vector<int>>> region_labels;
     // std::vector<Region> regions;
     std::vector<int> nextNeighbor;
     std::vector<int> neighborBucket;
-    std::vector<float> average;
+    std::vector<double> average;
     std::vector<int> count;
     std::vector<int> regionIndex;
 
     const int width, height, depth;
 
-    const double g = 256; // Some constant
-    float logDelta;       // Log delta for merging criterion
-    float Q;              // Parameter Q
-    float delta;          // Parameter delta
-    float factor;         // Merging factor
+    const float g = 65535.0; // Some constant
+    float logDelta;          // Log delta for merging criterion
+    float Q;                 // Parameter Q
+    float delta;             // Parameter delta
+    float factor;            // Merging factor
 
     // Initialize each voxel as its own region
     void initializeRegions();
 
-    void addNeighborPair(int neighborID, const std::vector<std::vector<int>> &pixel, const std::vector<std::vector<int>> &nextPixel, int i);
-    void addNeighborPair(int neighborID, const std::vector<std::vector<int>> &pixel, int i, int j);
+    void addNeighborPair(int neighborID, const uint16_t *pixel, uint16_t *nextPixel, int i);
+    void addNeighborPair(int neighborID, const uint16_t *pixel, int i, int j);
 
     void initializeNeighbors();
 

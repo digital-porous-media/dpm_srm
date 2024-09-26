@@ -3,25 +3,40 @@
 #include <cmath>
 #include <algorithm>
 
-// // Region constructor
-// SRM3D::Region::Region(int l, double intensity, int count)
-//     : label(l), intensity_sum(intensity), voxel_count(count) {}
-
-// // Compute the average intensity of the region
-// double SRM3D::Region::average_intensity() const {
-//     return intensity_sum / voxel_count;
-// }
-
-// // Merge another region into this region
-// void SRM3D::Region::merge(const Region& other) {
-//     intensity_sum += other.intensity_sum;
-//     voxel_count += other.voxel_count;
-// }
-
 // SRM3D constructor
-SRM3D::SRM3D(const std::vector<std::vector<std::vector<int>>> &img, double q)
-    : image(img), Q(q), width(img.size()), height(img[0].size()), depth(img[0][0].size())
+SRM3D::SRM3D(const py::array_t<uint16_t> &img, float q)
+    : Q(q), width(img.shape(2)), height(img.shape(1)), depth(img.shape(0))
 {
+    // Access pointer to np array
+    py::buffer_info buf = img.request();
+
+    if (buf.ndim != 3)
+    {
+        std::cerr << "Expected 3D array, but got " << buf.ndim << std::endl;
+        throw std::runtime_error("Error: Expected 3D array"); // Handle the error accordingly
+    }
+
+    // Ensure the data type is correct
+    if (buf.itemsize != sizeof(uint16_t))
+    {
+        std::cerr << "Expected int data type, but got item size: " << buf.itemsize << std::endl;
+        throw std::runtime_error("Error: Incorrect data type"); // Handle the error accordingly
+    }
+
+    img_ptr = static_cast<const uint16_t *>(buf.ptr);
+    if (!img_ptr)
+    {
+        std::cerr << "img_ptr is null!" << std::endl;
+        throw std::runtime_error("Error: img_ptr is null!"); // or handle the error appropriately
+    }
+
+    std::cout << "Width: " << width << ", Height: " << height << ", Depth: " << depth << std::endl;
+    // Initialize region labels
+    // region_labels.resize(depth, std::vector<std::vector<int>>(height, std::vector<int>(width, 0)));
+    average.resize(width * height * depth, 0.0);
+    count.resize(width * height * depth, 0);
+    regionIndex.resize(width * height * depth, -1);
+
     // Calculate factor and logDelta based on image dimensions
     delta = 1.0f / (6 * width * height * depth);            // delta = 1 / (6 * w * h * d)
     factor = (g * g) / (2 * Q);                             // factor = g^2 / 2Q
@@ -32,20 +47,14 @@ SRM3D::SRM3D(const std::vector<std::vector<std::vector<int>>> &img, double q)
 void SRM3D::initializeRegions()
 {
     int label_counter = 0;
-    region_labels.resize(width, std::vector<std::vector<int>>(height, std::vector<int>(depth)));
-    average.resize(width * height * depth, 0.0);
-    count.resize(width * height * depth, 0);
-    regionIndex.resize(width * height * depth, -1);
 
-    for (int j = 0; j < depth; ++j)
+    for (auto j = 0; j < depth; j++)
     {
-        const auto &pixel = image[j];
+        const uint16_t *pixel = img_ptr + (j * width * height);
         int offset = j * width * height;
-        for (int i = 0; i < width * height; ++i)
+        for (int i = 0; i < width * height; i++)
         {
-            int row = i / width;
-            int col = i % width;
-            average[offset + i] = pixel[row][col] & 0xff;
+            average[offset + i] = pixel[i]; //& 0xff;
             count[offset + i] = 1;
             regionIndex[offset + i] = offset + i;
         }
@@ -54,20 +63,19 @@ void SRM3D::initializeRegions()
 
 void SRM3D::initializeNeighbors()
 {
-
     // Create a vector to store the neighbors of each voxel
     nextNeighbor.resize(3 * width * height * depth);
     neighborBucket.resize(static_cast<int>(g), -1);
 
     // Bucket sort
-    std::vector<std::vector<int>> nextPixel(height, std::vector<int>(width, 0));
-
-    for (int k = depth - 1; k >= 0; k--)
+    // Allocate memory on the heap for nextPixel
+    uint16_t *nextPixel = new uint16_t[width * height]();
+    for (auto k = depth - 1; k >= 0; k--)
     {
-        const auto &pixel = image[k];
-        for (int j = height - 1; j >= 0; j--)
+        const auto *pixel = img_ptr + (k * width * height); // pointer to beginning of slice k
+        for (auto j = height - 1; j >= 0; j--)
         {
-            for (int i = width - 1; i >= 0; i--)
+            for (auto i = width - 1; i >= 0; i--)
             {
                 int index = i + width * j;
                 int neighborIndex = 3 * (index + k * width * height);
@@ -91,28 +99,21 @@ void SRM3D::initializeNeighbors()
                 }
             }
         }
-        nextPixel = pixel;
+        std::copy(pixel, pixel + (width * height), nextPixel);
     }
+    delete[] nextPixel; // Free allocated memory
 }
 
-void SRM3D::addNeighborPair(int neighborID, const std::vector<std::vector<int>> &pixel, const std::vector<std::vector<int>> &nextPixel, int i)
+void SRM3D::addNeighborPair(int neighborID, const uint16_t *pixel, uint16_t *nextPixel, int i)
 {
-    int row = i / width;
-    int col = i % width;
-
-    int difference = std::abs(static_cast<int>(pixel[row][col]) - static_cast<int>(nextPixel[row][col]));
+    auto difference = std::abs(static_cast<int>(pixel[i]) - static_cast<int>(nextPixel[i]));
     nextNeighbor[neighborID] = neighborBucket[difference];
     neighborBucket[difference] = neighborID;
 }
 
-void SRM3D::addNeighborPair(int neighborID, const std::vector<std::vector<int>> &pixel, int i, int j)
+void SRM3D::addNeighborPair(int neighborID, const uint16_t *pixel, int i, int j)
 {
-    int row_i = i / width;
-    int col_i = i % width;
-
-    int row_j = j / width;
-    int col_j = j % width;
-    int difference = abs(static_cast<int>(pixel[row_i][col_i]) - static_cast<int>(pixel[row_j][col_j]));
+    int difference = abs(static_cast<int>(pixel[i]) - static_cast<int>(pixel[j]));
     nextNeighbor[neighborID] = neighborBucket[difference];
     neighborBucket[difference] = neighborID;
 }
@@ -134,10 +135,6 @@ bool SRM3D::predicate(int i1, int i2) const
 
     return difference * difference <
            .1f * factor * ((log1 + logDelta) / count[i1] + ((log2 + logDelta) / count[i2]));
-    // double log1 = std::log(1 + static_cast<double>(count[i1])) * std::min(g, static_cast<double>(count[i1]));
-    // double log2 = std::log(1 + static_cast<double>(count[i2])) * std::min(g, static_cast<double>(count[i2]));
-    // double mergeCriterion = 0.1 * factor * ((log1 + logDelta) / regions[i1].voxel_count + ((log2 + logDelta) / regions[i2].voxel_count));
-    // return (difference * difference < mergeCriterion);
 }
 
 // Merge two regions
@@ -168,17 +165,29 @@ void SRM3D::mergeAllNeighbors3D()
 {
     int len = (int)g;
 
-    for (int i = 0; i < len; i++)
+    for (auto i = 0; i < len; i++)
     {
         int neighborIndex = neighborBucket[i];
+
         while (neighborIndex >= 0)
         {
             int i1 = neighborIndex / 3;
-            int i2 = i1 + (0 == (neighborIndex % 3) ? 1 : (1 == (neighborIndex % 3) ? width : width * height));
-
+            int value;
+            switch (neighborIndex % 3)
+            {
+            case 0:
+                value = 1;
+                break;
+            case 1:
+                value = width;
+                break;
+            case 2:
+                value = width * height;
+                break;
+            }
+            int i2 = i1 + value;
             i1 = getRegionIndex(i1);
             i2 = getRegionIndex(i2);
-
             if (i1 != i2 && predicate(i1, i2))
                 mergeRegions(i1, i2);
 
@@ -207,14 +216,21 @@ int SRM3D::consolidateRegions()
 void SRM3D::segment()
 {
     initializeRegions();
-    // mergeProcess();
     initializeNeighbors();
     mergeAllNeighbors3D();
     for (int i = 0; i < width * height * depth; i++)
     {
         average[i] = average[getRegionIndex(i)];
     }
-    region_labels.resize(width, std::vector<std::vector<int>>(height, std::vector<int>(depth)));
+}
+
+// Get the segmentation result as a 3D array of region labels
+py::array_t<uint16_t> SRM3D::getSegmentation() const
+{
+    // Create an np array for the output
+    auto result_array = py::array_t<uint16_t>({depth, height, width});
+    auto result_buf_info = result_array.request();
+    uint16_t *result_ptr = static_cast<uint16_t *>(result_buf_info.ptr);
 
     for (int i = 0; i < width; ++i)
     {
@@ -222,15 +238,10 @@ void SRM3D::segment()
         {
             for (int k = 0; k < depth; ++k)
             {
-                int index = i * height * depth + j * depth + k; // Calculate 1D index
-                region_labels[i][j][k] = average[index];        // Assign the label from the 1D regionIndex
+                int index = i * height * depth + j * depth + k;                  // Calculate 1D index
+                result_ptr[i * height * width + j * width + k] = average[index]; // Assign the label from the 1D regionIndex
             }
         }
     }
-}
-
-// Get the segmentation result as a 3D array of region labels
-std::vector<std::vector<std::vector<int>>> SRM3D::getSegmentation() const
-{
-    return region_labels;
+    return result_array;
 }
