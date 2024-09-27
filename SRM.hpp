@@ -289,11 +289,8 @@ void SRM3D<T>::mergeAllNeighbors3D()
 template <typename T>
 void SRM3D<T>::segment()
 {
-    std::cout << "Initializing regions... " << std::endl;
     initializeRegions();
-    std::cout << "Initializing neighbors... " << std::endl;
     initializeNeighbors();
-    std::cout << "Merging... " << std::endl;
     mergeAllNeighbors3D();
     for (uint64_t i = 0; i < width * height * depth; i++)
     {
