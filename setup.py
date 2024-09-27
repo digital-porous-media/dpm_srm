@@ -1,27 +1,23 @@
 from setuptools import setup, Extension
 import pybind11
+from pybind11.setup_helpers import Pybind11Extension
 
+# Define your extension module
 ext_modules = [
-    Extension(
-        "dpm_srm",
-        [src.]
-    )
+    Pybind11Extension(
+        'dpm_srm',  # Name of the module
+        ['dpm_srm/wrapper.cpp'],
+        include_dirs=[pybind11.get_include(), 'include'],
+        language='c++'
+    ),
 ]
 
-# from setuptools import setup, Extension
-# import pybind11
-
-# ext_modules = [
-#     Extension(
-#         'your_module_name',
-#         ['path/to/your_wrapper.cpp', 'path/to/SRM.cpp', 'path/to/SRM3D.cpp'],
-#         include_dirs=[pybind11.get_include(), pybind11.get_include(user=True)],
-#         language='c++'
-#     ),
-# ]
-
-# setup(
-#     name='your_module_name',
-#     ext_modules=ext_modules,
-#     zip_safe=False,
-# )
+setup(
+    name='dpm_srm',  # Replace with your module name
+    version='0.1.0',  # Version of your package
+    author='Digital Porous Media',  # Your name
+    author_email='bcchang@utexas.edu',  # Your email
+    description='Statistical Region Merging Segmentation',  # Description of your package
+    ext_modules=ext_modules,
+    zip_safe=False,
+)
