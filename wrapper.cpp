@@ -2,55 +2,43 @@
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
 #include "SRM.hpp"
+#include "SRM3D.hpp"
+#include "SRM2D.hpp"
 
 namespace py = pybind11;
 
-// std::shared_ptr<void> srm3d(py::object img, double q)
-// {
-//     if (py::isinstance<uint16_t>(img))
-//     {
-//         return std::make_shared<SRM3D<uint16_t>>(img.cast<uint16_t>(), q);
-//     }
-//     else if (py::isinstance<uint8_t>(img))
-//     {
-//         return std::make_shared<SRM3D<uint8_t>>(img.cast<uint8_t>(), q);
-//     }
-//     else if (py::isinstance<int16_t>(img))
-//     {
-//         return std::make_shared<SRM3D<int16_t>>(img.cast<int16_t>(), q);
-//     }
-//     else if (py::isinstance<int8_t>(img))
-//     {
-//         return std::make_shared<SRM3D<int8_t>>(img.cast<int8_t>(), q);
-//     }
-//     throw std::runtime_error("Unsupported type");
-// }
-
-PYBIND11_MODULE(srm3d, m)
+// Template function to help wrap SRM3D with different datatypes
+template <typename T>
+void wrap_srm3d(py::module &m, const std::string &suffix)
 {
-    m.doc() = "SRM3D segmentation module";
-
-    py::class_<SRM3D<uint8_t>>(m, "SRM3D_u1")
-        .def(py::init<const py::array_t<uint8_t> &, double>(),
+    std::string class_name = "SRM3D_" + suffix;
+    py::class_<SRM3D<T>>(m, class_name.c_str())
+        .def(py::init<const py::array_t<T> &, double>(),
              py::arg("image"), py::arg("Q"))
-        .def("segment", &SRM3D<uint8_t>::segment)
-        .def("get_result", &SRM3D<uint8_t>::getSegmentation);
+        .def("segment", &SRM3D<T>::segment)
+        .def("get_result", &SRM3D<T>::getSegmentation);
+}
 
-    py::class_<SRM3D<uint16_t>>(m, "SRM3D_u2")
-        .def(py::init<const py::array_t<uint16_t> &, double>(),
+template <typename T>
+void wrap_srm2d(py::module &m, const std::string &suffix)
+{
+    std::string class_name = "SRM2D_" + suffix;
+    py::class_<SRM2D<T>>(m, class_name.c_str())
+        .def(py::init<const py::array_t<T> &, double>(),
              py::arg("image"), py::arg("Q"))
-        .def("segment", &SRM3D<uint16_t>::segment)
-        .def("get_result", &SRM3D<uint16_t>::getSegmentation);
+        .def("segment", &SRM2D<T>::segment)
+        .def("get_result", &SRM2D<T>::getSegmentation);
+}
 
-    // py::class_<SRM3D<int8_t>>(m, "SRM3D_i1")
-    //     .def(py::init<const py::array_t<int8_t> &, float>(),
-    //          py::arg("image"), py::arg("Q"))
-    //     .def("segment", &SRM3D<int8_t>::segment)
-    //     .def("get_result", &SRM3D<int8_t>::getSegmentation);
-
-    // py::class_<SRM3D<int16_t>>(m, "SRM3D_i2")
-    //     .def(py::init<const py::array_t<int16_t> &, float>(),
-    //          py::arg("image"), py::arg("Q"))
-    //     .def("segment", &SRM3D<int16_t>::segment)
-    //     .def("get_result", &SRM3D<int16_t>::getSegmentation);
+PYBIND11_MODULE(dpm_srm, m)
+{
+    m.doc() = "SRM Segmentation module";
+    wrap_srm3d<uint8_t>(m, "u8");
+    wrap_srm3d<uint16_t>(m, "u16");
+    wrap_srm3d<int8_t>(m, "i8");
+    wrap_srm3d<int16_t>(m, "i16");
+    wrap_srm2d<uint8_t>(m, "u8");
+    wrap_srm2d<uint16_t>(m, "u16");
+    wrap_srm2d<int8_t>(m, "i8");
+    wrap_srm2d<int16_t>(m, "i16");
 }
