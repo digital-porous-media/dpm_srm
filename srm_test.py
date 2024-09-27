@@ -1,6 +1,6 @@
 import numpy as np
 import ctypes
-from build import srm3d
+from build.srm3d import SRM3D_u1, SRM3D_u2
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -9,15 +9,15 @@ np.random.seed(130621)
 
 image = np.random.randint(0, 65535, size=(100, 100, 100), dtype=np.uint16)
 
-plt.imshow(image[0], cmap="Greys_r")
+plt.imshow(image[50], cmap="Greys_r")
 plt.colorbar()
-# image.tofile("test_image.raw")
+image.tofile("test_image.raw")
 
 # Start a timer
 tick = perf_counter_ns()
 
 # Create an instance of the SRM3D class
-srm = srm3d.SRM3D(image, Q=5)
+srm = SRM3D_u2(image, Q=5)
 
 # Perform segmentation
 srm.segment()
@@ -28,7 +28,7 @@ segmentation_result = srm.get_result()
 
 
 plt.figure()
-plt.imshow(segmentation_result[0], cmap="Greys_r")
+plt.imshow(segmentation_result[50], cmap="Greys_r")
 plt.colorbar()
 plt.show()
 
