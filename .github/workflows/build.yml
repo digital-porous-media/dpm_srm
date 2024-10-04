@@ -46,7 +46,7 @@ jobs:
 
       # Upload wheels
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dpm_srm-wheels-${{ matrix.os }}-${{ matrix.python-version }}
           path: dist/*.whl
