@@ -1,4 +1,4 @@
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension
 import os
@@ -23,10 +23,5 @@ setup(
     description='Statistical Region Merging Segmentation',  # Description of your package
     ext_modules=ext_modules,
     zip_safe=False,
-    install_requires=[
-        "pybind11",
-        "numpy",
-        "tifffile",
-        "matplotlib"
-    ]
+    packages=find_packages(exclude=["include"])
 )

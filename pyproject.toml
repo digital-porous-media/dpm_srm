@@ -1,3 +1,12 @@
 [build-system]
-requires = ["setuptools", "wheel", "pybind11"]
-build-backend = "setuptools.build_meta"
+requires = ["scikit-build-core", "wheel", "pybind11"] #"setuptools"
+build-backend = "scikit_build_core.build"             #"setuptools.build_meta"
+
+[project]
+name = "dpm_srm"
+version = "0.1.0"
+description = "Statistical Region Merging Segmentation"
+authors = [{ name = "Digital Porous Media", email = "bcchang@utexas.edu" }]
+requires-python = ">=3.8"
+license = { text = "MIT" }
+dependencies = ["numpy"]
