@@ -20,4 +20,10 @@ setup(
     description='Statistical Region Merging Segmentation',  # Description of your package
     ext_modules=ext_modules,
     zip_safe=False,
+    install_requires=[
+        "pybind11",
+        "numpy",
+        "tifffile",
+        "matplotlib"
+    ]
 )
