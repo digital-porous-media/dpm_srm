@@ -1,4 +1,4 @@
-name: Build SRM Wheels
+name: Build and Deploy DPM_SRM
 
 on:
   workflow_dispatch:
@@ -34,13 +34,20 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install build
+          pip install wheel twine
 
       - name: Build the wheel
         run: |
-          python -m build
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          name: dpm_srm-wheels-${{ matrix.os }}-${{ matrix.python-version }}
-          path: dist/*.whl
+          python -m pip wheel . --no-deps --wheel-dir dist/
+      # - name: Upload wheels
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: dpm_srm-wheels-${{ matrix.os }}-${{ matrix.python-version }}
+      #     path: dist/*.whl
+
+      - name: Upload to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}  # Set these in your GitHub repo secrets
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          python -m twine upload dist/*
