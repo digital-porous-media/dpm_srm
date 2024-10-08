@@ -48,6 +48,6 @@ jobs:
       - name: Upload to PyPI
         env:
           TWINE_USERNAME: "__token__"  # Set these in your GitHub repo secrets
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          TWINE_PASSWORD: ${{ secrets.TESTPYPI_TOKEN }}
         run: |
-          twine upload dist/* --verbose
+          twine upload --repository testpypi dist/* --verbose
