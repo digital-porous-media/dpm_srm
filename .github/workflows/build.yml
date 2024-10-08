@@ -12,6 +12,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    environment: deployment
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
