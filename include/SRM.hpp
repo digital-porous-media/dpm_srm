@@ -27,12 +27,12 @@ public:
     virtual py::array_t<T> getSegmentation() const = 0;
 
 protected:
-    double Q; // Parameter Q
-    double g; // Some constant
+    double Q;             // Parameter Q
+    unsigned long long g; // Some constant
     double factor;
     float delta, logDelta;
 
-    std::vector<uint64_t> nextNeighbor;
+    std::vector<int64_t> nextNeighbor;
     std::vector<int64_t> neighborBucket;
     std::vector<double> average;
     std::vector<uint64_t> count;
@@ -42,8 +42,8 @@ protected:
     virtual void initializeRegions() = 0;
 
     virtual void initializeNeighbors() = 0;
-    void addNeighborPair(int neighborID, const T *pixel, T *nextPixel, int i);
-    void addNeighborPair(int neighborID, const T *pixel, int i, int j);
+    void addNeighborPair(uint64_t neighborID, const T *pixel, T *nextPixel, int i);
+    void addNeighborPair(uint64_t neighborID, const T *pixel, int i, int j);
 
     int64_t getRegionIndex(int64_t i);
 
@@ -64,22 +64,22 @@ protected:
 // Constructor
 template <typename T, int Dimensions>
 SRM<T, Dimensions>::SRM(double Q)
-    : Q(Q), g(static_cast<double>(std::numeric_limits<T>::max() + 1)), factor((g * g) / (2 * Q)) {}
+    : Q(Q), g(static_cast<unsigned long long>(std::numeric_limits<T>::max()) + 1), factor((g * g) / (2 * Q)) {}
 
 // Function to add neighbor pair to bucket
 template <typename T, int Dimensions>
-void SRM<T, Dimensions>::addNeighborPair(int neighborID, const T *pixel, T *nextPixel, int i)
+void SRM<T, Dimensions>::addNeighborPair(uint64_t neighborID, const T *pixel, T *nextPixel, int i)
 {
-    auto difference = std::abs(pixel[i] - nextPixel[i]);
+    T difference = std::abs(static_cast<long long>(pixel[i]) - static_cast<long long>(nextPixel[i]));
     nextNeighbor[neighborID] = neighborBucket[difference];
     neighborBucket[difference] = neighborID;
 }
 
 // Overloaded function to add neighbor pair to bucket
 template <typename T, int Dimensions>
-void SRM<T, Dimensions>::addNeighborPair(int neighborID, const T *pixel, int i, int j)
+void SRM<T, Dimensions>::addNeighborPair(uint64_t neighborID, const T *pixel, int i, int j)
 {
-    int difference = std::abs(pixel[i] - pixel[j]);
+    T difference = std::abs(static_cast<long long>(pixel[i]) - static_cast<long long>(pixel[j]));
     nextNeighbor[neighborID] = neighborBucket[difference];
     neighborBucket[difference] = neighborID;
 }

@@ -100,9 +100,8 @@ void SRM2D<T>::initializeNeighbors()
     {
         for (int i = width - 1; i >= 0; i--)
         {
-            int index = i + width * j;
-            int neighborIndex = 2 * index;
-
+            uint64_t index = i + width * j;
+            uint64_t neighborIndex = 2 * index;
             // vertical
             if (j < height - 1)
             {

@@ -2,6 +2,9 @@
 requires = ["scikit-build-core", "wheel", "pybind11"] #"setuptools"
 build-backend = "scikit_build_core.build"             #"setuptools.build_meta"
 
+[tool.scikit-build-core]
+source_dir = "."
+
 [project]
 name = "dpm_srm"
 version = "0.1.0"

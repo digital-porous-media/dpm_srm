@@ -30,15 +30,13 @@ void wrap_srm2d(py::module &m, const std::string &suffix)
         .def("get_result", &SRM2D<T>::getSegmentation);
 }
 
-PYBIND11_MODULE(dpm_srm, m)
+PYBIND11_MODULE(_dpm_srm, m)
 {
-    m.doc() = "SRM Segmentation module";
+    m.doc() = "Statistical Region Merging (SRM) Segmentation module";
     wrap_srm3d<uint8_t>(m, "u8");
     wrap_srm3d<uint16_t>(m, "u16");
-    wrap_srm3d<int8_t>(m, "i8");
-    wrap_srm3d<int16_t>(m, "i16");
+    wrap_srm3d<uint32_t>(m, "u32");
     wrap_srm2d<uint8_t>(m, "u8");
     wrap_srm2d<uint16_t>(m, "u16");
-    wrap_srm2d<int8_t>(m, "i8");
-    wrap_srm2d<int16_t>(m, "i16");
+    wrap_srm2d<uint32_t>(m, "u32");
 }

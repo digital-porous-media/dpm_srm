@@ -107,8 +107,8 @@ void SRM3D<T>::initializeNeighbors()
         {
             for (int i = width - 1; i >= 0; i--)
             {
-                int index = i + width * j;
-                int neighborIndex = 3 * (index + k * width * height);
+                uint64_t index = i + width * j;
+                uint64_t neighborIndex = 3 * (index + k * width * height);
 
                 // depth
                 if (k < depth - 1)
