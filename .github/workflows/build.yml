@@ -42,7 +42,7 @@ jobs:
 
       - name: Build the wheel
         run: |
-          cibuildwheel --output-dir dist --platforms manylinux_x86_64 -- -DPython3_EXECUTABLE=$(which python) -v
+          cibuildwheel --output-dir dist -DPython3_EXECUTABLE=$(which python) -v
       # python -m pip wheel . --no-deps --wheel-dir dist/
           
       # - name: Upload wheels
