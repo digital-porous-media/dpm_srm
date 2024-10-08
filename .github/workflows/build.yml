@@ -42,7 +42,7 @@ jobs:
 
       - name: Build the wheel
         run: |
-          python -m cibuildwheel --output-dir dist -v
+          python -m cibuildwheel --output-dir dist
       # python -m pip wheel . --no-deps --wheel-dir dist/
           
       # - name: Upload wheels
