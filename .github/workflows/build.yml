@@ -51,4 +51,4 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}  # Set these in your GitHub repo secrets
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          python -m twine upload dist/*
+          python -m twine upload dist/* --verbose
