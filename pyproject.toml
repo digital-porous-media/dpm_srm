@@ -5,6 +5,9 @@ build-backend = "scikit_build_core.build"             #"setuptools.build_meta"
 [tool.scikit-build-core]
 source_dir = "."
 
+[tool.cibuildwheel]
+platforms = ["manylinux_x86_64", "macosx_x86_64", "win_amd64"]
+
 [project]
 name = "dpm_srm"
 version = "0.1.0"
