@@ -25,20 +25,25 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install MSBuild tools (Windows only)
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --includeOptional"
-      
-      # Install dependencies
-      - name: Install dependencies
+      # - name: Install MSBuild tools (Windows only)
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --includeOptional"
+      - name: Install cibuildwheel
         run: |
           python -m pip install --upgrade pip
-          pip install wheel twine
+          python -m pip install cibuildwheel
+      # Install dependencies
+      # - name: Install dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install wheel twine
 
       - name: Build the wheel
         run: |
-          python -m pip wheel . --no-deps --wheel-dir dist/
+          cibuildwheel --output-dir dist
+      # python -m pip wheel . --no-deps --wheel-dir dist/
+          
       # - name: Upload wheels
       #   uses: actions/upload-artifact@v3
       #   with:
@@ -50,4 +55,5 @@ jobs:
           TWINE_USERNAME: "__token__"  # Set these in your GitHub repo secrets
           TWINE_PASSWORD: ${{ secrets.TESTPYPI_TOKEN }}
         run: |
+          python -m pip install twine
           twine upload --repository testpypi dist/* --verbose
