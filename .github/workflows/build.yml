@@ -1,7 +1,6 @@
 name: Build and Deploy DPM_SRM
 
 on:
-  # workflow_dispatch:
   push:
     branches:
       - main
@@ -14,8 +13,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest]  # macos-latest, ubuntu-latest, windows-latest]
-        python-version: ['3.12'] #'3.8', '3.9', '3.10', '3.11', '3.12']
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
       - uses: actions/checkout@v2
@@ -25,10 +24,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # - name: Install MSBuild tools (Windows only)
-      #   if: matrix.os == 'windows-latest'
-      #   run: |
-      #     choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --includeOptional"
       - name: Install cibuildwheel
         run: |
           python -m pip install --upgrade pip
@@ -38,9 +33,8 @@ jobs:
       - name: Build the wheel
         run: python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: cp312-* # cp38-* cp39-* cp310-* cp311-*
+          CIBW_BUILD: cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*
           CXXFLAGS: "-std=c++17"
-      # run: python -m pip wheel . --no-deps --wheel-dir dist/
         
           
       # - name: Upload wheels
@@ -51,8 +45,8 @@ jobs:
 
       - name: Upload to PyPI
         env:
-          TWINE_USERNAME: "__token__"  # Set these in your GitHub repo secrets
-          TWINE_PASSWORD: ${{ secrets.TESTPYPI_TOKEN }}
+          TWINE_USERNAME: "__token__"
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           python -m pip install twine
-          twine upload --repository testpypi dist/* --verbose
+          twine upload dist/* --verbose
