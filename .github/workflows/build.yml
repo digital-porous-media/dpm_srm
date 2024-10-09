@@ -29,6 +29,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get install python3-dev
+          echo $(which python)
 
       # - name: Install MSBuild tools (Windows only)
       #   if: matrix.os == 'windows-latest'
@@ -43,7 +44,7 @@ jobs:
 
       - name: Build the wheel
         run: |
-          python -m cibuildwheel --output-dir dist -- -DPYTHON_EXECUTABLE=$(which python)
+          python3 -m cibuildwheel --output-dir dist
       # python -m pip wheel . --no-deps --wheel-dir dist/
           
       # - name: Upload wheels
