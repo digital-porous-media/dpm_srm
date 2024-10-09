@@ -35,18 +35,19 @@ jobs:
       #   if: matrix.os == 'windows-latest'
       #   run: |
       #     choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --includeOptional"
-      - name: Install cibuildwheel
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install cibuildwheel
-          python -m pip install cmake scikit-build-core wheel pybind11
+      # - name: Install cibuildwheel
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     python -m pip install cibuildwheel
+      #     python -m pip install cmake scikit-build-core wheel pybind11
 
 
       - name: Build the wheel
-        run: python3 -m cibuildwheel --output-dir dist
-        env:
-          CIBW_BUILD: cp38-* cp39-* cp310-* cp311-* cp312-*
-      # python -m pip wheel . --no-deps --wheel-dir dist/
+        run: python -m pip wheel . --no-deps --wheel-dir dist/
+        # run: python3 -m cibuildwheel --output-dir dist
+        # env:
+        #   CIBW_BUILD: cp38-* cp39-* cp310-* cp311-* cp312-*
+        
           
       # - name: Upload wheels
       #   uses: actions/upload-artifact@v3
