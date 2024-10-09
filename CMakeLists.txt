@@ -4,7 +4,8 @@ project(dpm_srm VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 20)
 
 # Find Python (adjust the version as needed)
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+find_package(Python3 REQUIRED)
+# COMPONENTS Interpreter Development)
 
 find_package(PythonLibs REQUIRED)
 # If you are using pybind11
