@@ -17,17 +17,11 @@ ext_modules = [
 
 setup(
     name='dpm_srm',  # Replace with your module name
-    version='0.1.1',  # Version of your package
+    version='0.1.2',  # Version of your package
     author='Digital Porous Media',  # Your name
     author_email='bcchang@utexas.edu',  # Your email
     description='Statistical Region Merging Segmentation',  # Description of your package
     ext_modules=ext_modules,
     zip_safe=False,
     packages=find_packages(exclude=["include"])
-    # classifiers=[
-    #     'License :: OSI Approved :: BSD License',
-    #     'Programming Language :: Python :: 3',
-    #     'Programming Language :: C++',
-    # ],
-
 )
