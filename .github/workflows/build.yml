@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]  # , ubuntu-latest, windows-latest]
+        os: [windows-latest]  # macos-latest, ubuntu-latest, windows-latest]
         python-version: ['3.12'] #'3.8', '3.9', '3.10', '3.11', '3.12']
 
     steps:
@@ -38,7 +38,7 @@ jobs:
       - name: Build the wheel
         run: python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: cp38-* cp39-* cp310-* cp311-* cp312-*
+          CIBW_BUILD: cp312-* # cp38-* cp39-* cp310-* cp311-*
           CXXFLAGS: "-std=c++17"
       # run: python -m pip wheel . --no-deps --wheel-dir dist/
         
