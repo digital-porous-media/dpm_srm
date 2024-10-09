@@ -16,7 +16,7 @@ description = "Statistical Region Merging Segmentation"
 authors = [{ name = "Digital Porous Media", email = "bcchang@utexas.edu" }]
 requires-python = ">=3.8"
 license = { file = 'LICENSE' }
-dependencies = ["numpy"]
+# dependencies = ["numpy"]
 classifiers = [
     # How mature is this project? Common values are
     #   3 - Alpha
