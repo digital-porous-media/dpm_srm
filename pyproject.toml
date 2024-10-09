@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools", "wheel", "pybind11"] #"scikit-build-core"
-build-backend = "setuptools.build_meta"            #"scikit_build_core.build" 
+build-backend = "setuptools.build_meta"        #"scikit_build_core.build" 
 
 # [tool.scikit-build-core]
 # source_dir = "."
@@ -15,5 +15,4 @@ version = "0.1.0"
 description = "Statistical Region Merging Segmentation"
 authors = [{ name = "Digital Porous Media", email = "bcchang@utexas.edu" }]
 requires-python = ">=3.8"
-license = { text = "MIT" }
-dependencies = ["numpy"]
+license = { text = 'BSD-2-Clause' }                                         # Your license
