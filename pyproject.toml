@@ -1,6 +1,6 @@
 [build-system]
-requires = ["scikit-build-core", "wheel", "pybind11"] #"setuptools"
-build-backend = "scikit_build_core.build"             #"setuptools.build_meta"
+requires = ["setuptools", "wheel", "pybind11"] #"scikit-build-core"
+build-backend = "setuptools.build_meta"            #"scikit_build_core.build" 
 
 # [tool.scikit-build-core]
 # source_dir = "."
