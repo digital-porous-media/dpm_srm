@@ -9,7 +9,7 @@ include_path = os.path.abspath('include')
 ext_modules = [
     Pybind11Extension(
         'dpm_srm',  # Name of the module
-        ['dpm_srm/wrapper.cpp'],
+        ['wrappers/wrapper.cpp'],
         include_dirs=[include_path, pybind11.get_include()],
         language='c++'
     ),
