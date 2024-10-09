@@ -17,7 +17,7 @@ ext_modules = [
 
 setup(
     name='dpm_srm',  # Replace with your module name
-    version='0.1.2',  # Version of your package
+    version='0.1.3',  # Version of your package
     author='Digital Porous Media',  # Your name
     author_email='bcchang@utexas.edu',  # Your email
     description='Statistical Region Merging Segmentation',  # Description of your package

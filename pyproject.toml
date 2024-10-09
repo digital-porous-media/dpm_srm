@@ -11,12 +11,12 @@ build-backend = "setuptools.build_meta"        #"scikit_build_core.build"
 
 [project]
 name = "dpm_srm"
-version = "0.1.2"
+version = "0.1.3"
 description = "Statistical Region Merging Segmentation"
 authors = [{ name = "Digital Porous Media", email = "bcchang@utexas.edu" }]
 requires-python = ">=3.8"
 license = { file = 'LICENSE' }
-dependencies = ["numpy>=2.0.0"]
+dependencies = ["numpy"]
 classifiers = [
     # How mature is this project? Common values are
     #   3 - Alpha
