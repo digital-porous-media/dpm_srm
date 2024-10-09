@@ -43,8 +43,9 @@ jobs:
 
 
       - name: Build the wheel
-        run: |
-          python3 -m cibuildwheel --output-dir dist
+        run: python3 -m cibuildwheel --output-dir dist
+        env:
+          CIBW_BUILD: cp38-* cp39-* cp310-* cp311-* cp312-*
       # python -m pip wheel . --no-deps --wheel-dir dist/
           
       # - name: Upload wheels
