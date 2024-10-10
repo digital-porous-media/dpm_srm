@@ -13,7 +13,7 @@ ext_modules = [
 
 setup(
     name='dpm_srm',
-    version='0.1.6',
+    version='0.1.7',
     author='Digital Porous Media',
     author_email='bcchang@utexas.edu',
     description='Statistical Region Merging Segmentation',
