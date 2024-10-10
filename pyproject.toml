@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"        #"scikit_build_core.build"
 name = "dpm_srm"
 version = "0.1.6"
 description = "Statistical Region Merging Segmentation"
+readme = "README.md"
 authors = [{ name = "Digital Porous Media", email = "bcchang@utexas.edu" }]
 requires-python = ">=3.8"
 license = { text = 'BSD License' }
