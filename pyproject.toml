@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"        #"scikit_build_core.build"
 
 [project]
 name = "dpm_srm"
-version = "0.1.5"
+version = "0.1.6"
 description = "Statistical Region Merging Segmentation"
 authors = [{ name = "Digital Porous Media", email = "bcchang@utexas.edu" }]
 requires-python = ">=3.8"
@@ -25,6 +25,6 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/DigitalPorousMedia"
-Repository = "https://github.com/DigitalPorousMedia/dpm_srm"
-Issues = "https://github.com/DigitalPorousMedia/dpm_srm/issues"
+Homepage = "https://github.com/digital-porous-media/"
+Repository = "https://github.com/digital-porous-media/dpm_srm"
+Issues = "https://github.com/digital-porous-media/dpm_srm/issues"
