@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"        #"scikit_build_core.build"
 
 [project]
 name = "dpm_srm"
-version = "0.1.7"
+version = "0.1.8"
 description = "Statistical Region Merging Segmentation"
 readme = "README.md"
 authors = [{ name = "Digital Porous Media", email = "bcchang@utexas.edu" }]
