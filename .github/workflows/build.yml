@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
 
     steps:
       - uses: actions/checkout@v2
@@ -34,6 +34,8 @@ jobs:
         run: python -m cibuildwheel --output-dir dist
         env:
           CIBW_BUILD: cp3*
+          CIBW_ARCHS_LINUX: "x86_64 aarch64"
+          CIBW_ARCHS_MACOS: "x86_64 arm64"
           CXXFLAGS: "-std=c++17"
         
           
